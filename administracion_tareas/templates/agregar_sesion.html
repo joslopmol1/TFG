@@ -1,0 +1,24 @@
+<!-- En el archivo agregar_sesion.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agregar Sesión</title>
+</head>
+<body>
+    <h2>Agregar Sesión</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Guardar</button>
+    </form>
+
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
