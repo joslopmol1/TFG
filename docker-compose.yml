@@ -27,7 +27,7 @@ services:
       - db
 
   jenkins:
-    image: jenkins/jenkins:lts
+    image: jenkins/jenkins:jdk17
     ports:
       - "8080:8080"
     volumes:
@@ -39,6 +39,8 @@ services:
     image: sonarqube
     ports:
       - "9000:9000"
+    volumes:
+      - sonarqube_home:/var/sonarqube_home
     networks:
       - jenkins_sonar_network
     environment:
@@ -48,6 +50,8 @@ services:
 
   sonarqube_db:
     image: postgres
+    volumes:
+      - sonarqube_db_home:/var/sonarqube_db_home
     networks:
       - jenkins_sonar_network
     environment:
@@ -60,3 +64,5 @@ networks:
 
 volumes:
   jenkins_home:
+  sonarqube_home:
+  sonarqube_db_home:
