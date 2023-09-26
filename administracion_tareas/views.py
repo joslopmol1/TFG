@@ -2,7 +2,7 @@ import os
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import SesionForm, AsistenteForm, ArchivoForm
-from .models import Sesion, Asistente
+from .models import Sesion, Asistente,Reunion
 
 from odf.opendocument import load
 from docx import Document
@@ -136,7 +136,17 @@ def cargar_archivo(request):
             contenido = procesar_archivo_pdf(archivo)
 
             if contenido:
-                # Haz algo con el resultado, como mostrarlo en una vista
+                reunion = Reunion(
+                    numero_sesion=contenido['numero_sesion'],
+                    fecha=contenido['fecha'],
+                    hora_inicio=contenido['hora_inicio'],
+                    hora_finalizacion=contenido['hora_finalizacion'],
+                    lugar=contenido['lugar'],
+                    temas_tratados=contenido['temas_tratados'],
+                    acuerdos_adoptados=contenido['acuerdos']
+                )
+                reunion.save()#guardar datos reunión
+                # Mostrar resultado en una vista
                 return render(request, 'mostrar_contenido.html', {'contenido': contenido})
             else:
                 return render(request, 'error.html', {'mensaje': 'No se pudieron extraer datos del PDF.'})
