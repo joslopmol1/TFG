@@ -1,14 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Cargar Archivo</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}Cargar Archivo{% endblock %}
+{% block content %}
     <h2>Cargar Archivo</h2>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Cargar</button>
     </form>
-</body>
-</html>
+{% endblock %}

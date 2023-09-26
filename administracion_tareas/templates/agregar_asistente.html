@@ -1,12 +1,8 @@
-<!-- En el archivo agregar_asistente.html -->
+{% extends 'base.html' %}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Agregar Asistente</title>
-</head>
-<body>
-    <h2>Agregar Asistente</h2>
+{% block title %}Agregar Asistente{% endblock %}
+{% block content %}
+<h2>Agregar Asistente</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
@@ -20,5 +16,4 @@
             {% endfor %}
         </ul>
     {% endif %}
-</body>
-</html>
+{% endblock %}
