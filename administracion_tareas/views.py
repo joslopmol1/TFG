@@ -86,12 +86,12 @@ def procesar_archivo_excel(archivo):
 
 # Función para extraer y filtrar datos de un PDF
 def procesar_archivo_pdf(archivo):
-    # Guarda el archivo en un directorio temporal
+    # Guardamos el archivo en un directorio temporal
     with tempfile.NamedTemporaryFile(delete=False) as tmpfile:
         for chunk in archivo.chunks():
             tmpfile.write(chunk)
 
-    # Obtén la ruta del archivo temporal
+    # se obtiene la ruta del archivo temporal
     archivo_temporal = tmpfile.name
 
     # Ahora, se usa el archivo_temporal con pdfminer.six
@@ -123,7 +123,7 @@ def procesar_archivo_pdf(archivo):
         'temas_tratados': temas_tratados.group(1).strip() if temas_tratados else None,
         'acuerdos': acuerdos.group(1).strip() if acuerdos else None
     }
-    # Después de procesar el archivo, elimina el archivo temporal
+    # Después de procesar el archivo, eliminamos el archivo temporal
     os.remove(archivo_temporal)
     return resultado
 
@@ -133,7 +133,7 @@ def cargar_archivo(request):
         if form.is_valid():
             archivo = request.FILES['archivo']  # Obtén el archivo del formulario
 
-            # Llama a la función para procesar el archivo PDF
+            # Llamamos a la función para procesar el archivo PDF
             contenido = procesar_archivo_pdf(archivo)
 
             if contenido:
@@ -146,7 +146,7 @@ def cargar_archivo(request):
                     temas_tratados=contenido['temas_tratados'],
                     acuerdos_adoptados=contenido['acuerdos']
                 )
-                reunion.save()#guardar datos reunión
+                reunion.save() #guardar datos reunión
                 # Mostrar resultado en una vista
                 return render(request, 'mostrar_contenido.html', {'contenido': contenido})
             else:
