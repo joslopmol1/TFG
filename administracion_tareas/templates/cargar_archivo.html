@@ -3,9 +3,9 @@
 {% block title %}Cargar Archivo{% endblock %}
 {% block content %}
     <h2>Cargar Archivo</h2>
-    <form method="post" enctype="multipart/form-data">
+    <form class="w3-input" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Cargar</button>
+        <button class="w3-button w3-black" type="submit">Cargar</button>
     </form>
 {% endblock %}
