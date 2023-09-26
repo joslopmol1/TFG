@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import SesionForm, AsistenteForm, ArchivoForm
 from .models import Sesion, Asistente,Reunion
+from datetime import datetime   
 
 from odf.opendocument import load
 from docx import Document
@@ -138,7 +139,7 @@ def cargar_archivo(request):
             if contenido:
                 reunion = Reunion(
                     numero_sesion=contenido['numero_sesion'],
-                    fecha=contenido['fecha'],
+                    fecha=datetime.strptime(contenido['fecha'], '%d/%m/%Y').strftime('%Y-%m-%d'),
                     hora_inicio=contenido['hora_inicio'],
                     hora_finalizacion=contenido['hora_finalizacion'],
                     lugar=contenido['lugar'],

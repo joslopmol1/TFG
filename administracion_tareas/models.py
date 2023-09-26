@@ -1,6 +1,6 @@
 from django.db import models
 
-# Create your models here.
+
 
 class Sesion(models.Model):
     numero_sesion = models.IntegerField(unique=True)
