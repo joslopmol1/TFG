@@ -19,7 +19,8 @@ from administracion_tareas import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-     path('agregar-sesion/', views.agregar_sesion, name='agregar_sesion'),
+    path('agregar-sesion/', views.agregar_sesion, name='agregar_sesion'),
     path('agregar-asistente/', views.agregar_asistente, name='agregar_asistente'),
     path('cargar-archivo/', views.cargar_archivo, name='cargar_archivo'),
+    path('create-pdf/', views.create_pdf, name='create_pdf'),
 ]

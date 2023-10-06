@@ -13,6 +13,11 @@ from django.core.files.storage import default_storage
 from django.conf import settings
 from pdfminer.high_level import extract_text
 from io import BytesIO
+from reportlab.pdfgen import canvas
+from django.http import HttpResponse
+from django.conf import settings
+from pdfrw import PdfReader, PdfDict, PdfWriter
+
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import tempfile
 
@@ -158,7 +163,7 @@ def cargar_archivo(request):
 
 def prueba(request):
     if request.method == 'POST':
-        archivo = request.FILES['archivo']  # Asegúrate de que 'archivo' sea el nombre del campo en tu formulario
+        archivo = request.FILES['archivo']  # Asegurarse de que 'archivo' sea el nombre del campo en tu formulario
         # Convierte el objeto InMemoryUploadedFile en BytesIO
         archivo_bytesio = BytesIO(archivo.read())
 
@@ -176,3 +181,52 @@ def prueba(request):
         form = ArchivoForm()
 
     return render(request, 'cargar_archivo.html', {'form': form})
+
+def replace_keywords_with_data(pdf_template_path, replacements):
+    template = PdfReader(pdf_template_path)
+    for page in template.pages:
+        annotations = page['/Annots'] or []
+        for annotation in annotations:
+            key = annotation['/T'][1:-1]  # Nombre del campo
+            if key in replacements:
+                annotation.update(PdfDict(V='{}'.format(replacements[key])))
+
+    output = BytesIO()
+    PdfWriter().write(output, template)
+    output.seek(0)
+    return output
+
+def create_pdf(request):
+    template_path = os.path.join(settings.MEDIA_ROOT, 'plantilla.pdf')
+
+    if request.method == 'POST':
+        form = SesionForm(request.POST)
+        if form.is_valid():
+            sesion = form.save()
+
+            replacements = {
+                'fecha_completa': str(sesion.fecha),
+                'lugar': sesion.lugar,
+                'temas_tratados': sesion.temas_tratados,
+                'acuerdos_adoptados': sesion.acuerdos_adoptados,
+                'hora_inicio': str(sesion.hora_inicio),
+                'hora_finalizacion': str(sesion.hora_finalizacion),
+                'lugar_sesion': sesion.lugar,
+                'cargo_autoridad': sesion.presidencia,
+                'convocatoria': sesion.convocatoria,
+                'organo_reunido': sesion.organo_reunido,
+                'tipo_sesion': sesion.tipo_sesion,
+                'numero_sesion': str(sesion.numero_sesion),
+                'asistentes': sesion.asistentes
+            }
+
+            pdf_in_memory = replace_keywords_with_data(template_path, replacements)
+
+            response = HttpResponse(pdf_in_memory.getvalue(), content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename="sesion_{sesion.numero_sesion}.pdf"'
+            return response
+
+    else:
+        form = SesionForm()
+
+    return render(request, 'form_template.html', {'form': form})
