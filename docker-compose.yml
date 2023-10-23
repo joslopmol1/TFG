@@ -41,6 +41,10 @@ services:
       - "9000:9000"
     volumes:
       - sonarqube_home:/var/sonarqube_home
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+      - sonarqube_temp:/opt/sonarqube/temp
     networks:
       - jenkins_sonar_network
     environment:
@@ -52,6 +56,7 @@ services:
     image: postgres
     volumes:
       - sonarqube_db_home:/var/sonarqube_db_home
+      - sonarqube_db_data:/var/lib/postgresql/data
     networks:
       - jenkins_sonar_network
     environment:
@@ -66,3 +71,8 @@ volumes:
   jenkins_home:
   sonarqube_home:
   sonarqube_db_home:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  sonarqube_temp:
+  sonarqube_db_data:
