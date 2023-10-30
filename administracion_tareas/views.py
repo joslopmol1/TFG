@@ -161,6 +161,20 @@ def cargar_archivo(request):
 
     return render(request, 'cargar_archivo.html', {'form': form})
 
+def replace_keywords_with_data(pdf_template_path, replacements):
+    template = PdfReader(pdf_template_path)
+    for page in template.pages:
+        annotations = page['/Annots'] or []
+        for annotation in annotations:
+            key = annotation['/T'][1:-1]  # Nombre del campo
+            if key in replacements:
+                annotation.update(PdfDict(V='{}'.format(replacements[key])))
+
+    output = BytesIO()
+    PdfWriter().write(output, template)
+    output.seek(0)
+    return output
+
 def create_pdf(request):
     template_path = os.path.join(settings.MEDIA_ROOT, 'plantilla.pdf')
 
