@@ -161,41 +161,6 @@ def cargar_archivo(request):
 
     return render(request, 'cargar_archivo.html', {'form': form})
 
-def prueba(request):
-    if request.method == 'POST':
-        archivo = request.FILES['archivo']  # Asegurarse de que 'archivo' sea el nombre del campo en tu formulario
-        # Convierte el objeto InMemoryUploadedFile en BytesIO
-        archivo_bytesio = BytesIO(archivo.read())
-
-        # Procesar el archivo PDF y obtener los datos
-        contenido = procesar_archivo_pdf(archivo_bytesio)
-        if archivo.name.endswith('.pdf'):
-            contenido = procesar_archivo_pdf(request)
-        else:
-            messages.error(
-            request, 'Formato de archivo no compatible. Se permiten solo archivos ODT, Word o Excel.')
-            return redirect('cargar_archivo')
-
-        return render(request, 'mostrar_contenido.html', {'contenido': contenido, 'file_url': file_url})
-    else:
-        form = ArchivoForm()
-
-    return render(request, 'cargar_archivo.html', {'form': form})
-
-def replace_keywords_with_data(pdf_template_path, replacements):
-    template = PdfReader(pdf_template_path)
-    for page in template.pages:
-        annotations = page['/Annots'] or []
-        for annotation in annotations:
-            key = annotation['/T'][1:-1]  # Nombre del campo
-            if key in replacements:
-                annotation.update(PdfDict(V='{}'.format(replacements[key])))
-
-    output = BytesIO()
-    PdfWriter().write(output, template)
-    output.seek(0)
-    return output
-
 def create_pdf(request):
     template_path = os.path.join(settings.MEDIA_ROOT, 'plantilla.pdf')
 
