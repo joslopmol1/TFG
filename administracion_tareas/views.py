@@ -17,6 +17,7 @@ from reportlab.pdfgen import canvas
 from django.http import HttpResponse
 from django.conf import settings
 from pdfrw import PdfReader, PdfDict, PdfWriter
+from django.core.mail import EmailMessage
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import tempfile
@@ -24,6 +25,9 @@ import tempfile
 # Librería para expresiones regulares
 import re
 from django.contrib import messages
+
+def inicio(request):
+    return render(request, 'base.html')
 
 def agregar_sesion(request):
     if request.method == 'POST':
@@ -198,12 +202,30 @@ def create_pdf(request):
                 'numero_sesion': str(sesion.numero_sesion),
                 'asistentes': sesion.asistentes
             }
-
+    
             pdf_in_memory = replace_keywords_with_data(template_path, replacements)
-
             response = HttpResponse(pdf_in_memory.getvalue(), content_type='application/pdf')
             response['Content-Disposition'] = f'attachment; filename="sesion_{sesion.numero_sesion}.pdf"'
             return response
+        """    
+            subject = 'Prueba TFG'  
+            email_from = settings.EMAIL_HOST_USER  
+            recipient_list = ['asucare23@gmail.com',]  
+            message = 'Le envío la prueba de la generación de un acta de reunión.'
+            attachment = (
+                f'sesion_{sesion.numero_sesion}.pdf',
+                pdf_in_memory.getvalue(),
+                'application/pdf'
+            )
+            email = EmailMessage(subject, message, email_from, recipient_list)
+            email.attach(*attachment)
+            email.send()
+            try:
+                email.send()
+                print("Correo electrónico enviado exitosamente.")
+            except Exception as e:
+                print("Error al enviar el correo electrónico:", str(e))
+        """            
 
     else:
         form = SesionForm()

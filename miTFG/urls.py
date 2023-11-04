@@ -23,4 +23,5 @@ urlpatterns = [
     path('agregar-asistente/', views.agregar_asistente, name='agregar_asistente'),
     path('cargar-archivo/', views.cargar_archivo, name='cargar_archivo'),
     path('create-pdf/', views.create_pdf, name='create_pdf'),
+    path('inicio/', views.inicio, name='inicio'),
 ]
