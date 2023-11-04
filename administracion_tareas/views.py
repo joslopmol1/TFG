@@ -206,26 +206,7 @@ def create_pdf(request):
             pdf_in_memory = replace_keywords_with_data(template_path, replacements)
             response = HttpResponse(pdf_in_memory.getvalue(), content_type='application/pdf')
             response['Content-Disposition'] = f'attachment; filename="sesion_{sesion.numero_sesion}.pdf"'
-            return response
-        """    
-            subject = 'Prueba TFG'  
-            email_from = settings.EMAIL_HOST_USER  
-            recipient_list = ['asucare23@gmail.com',]  
-            message = 'Le envío la prueba de la generación de un acta de reunión.'
-            attachment = (
-                f'sesion_{sesion.numero_sesion}.pdf',
-                pdf_in_memory.getvalue(),
-                'application/pdf'
-            )
-            email = EmailMessage(subject, message, email_from, recipient_list)
-            email.attach(*attachment)
-            email.send()
-            try:
-                email.send()
-                print("Correo electrónico enviado exitosamente.")
-            except Exception as e:
-                print("Error al enviar el correo electrónico:", str(e))
-        """            
+            return response          
 
     else:
         form = SesionForm()
